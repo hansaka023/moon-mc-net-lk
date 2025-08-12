@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moon MC Network Store</title>
+  <style>
+    :root{--bg:#070707;--accent:#ffd200;--panel:#111;--muted:#9aa6b2;--radius:14px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter, Arial, sans-serif;background:var(--bg);color:#eaf6ff}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .logo{display:flex;gap:12px;align-items:center}
+    .logo .mark{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),#ff9f00);display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:900;color:#111}
+    nav a{margin-left:12px;color:#eaf6ff;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .item{background:var(--panel);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);text-align:left}
+    .item h4{color:var(--accent);margin-bottom:8px}
+    .price{font-weight:900}
+    .buy{background:var(--accent);color:#111;padding:8px 12px;border-radius:10px;font-weight:800;display:inline-block;margin-top:10px;transition:transform .2s}
+    .buy:hover{transform:translateY(-4px)}
+    .back{display:inline-block;margin-top:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="mark">🌙</div>
+        <div>
+          <div style="font-weight:800">Moon MC Network</div>
+          <div style="font-size:13px;color:var(--muted)">Store • Cosmetics & Ranks</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#rules">Rules</a>
+        <a href="support.html">Support</a>
+      </nav>
+    </header>
+
+    <main>
+      <h2 style="color:var(--accent)">Store</h2>
+      <p style="color:var(--muted)">Purchase ranks, kits and more. </p>
+
+      <div class="grid" style="margin-top:18px">
+        <div class="item">
+          <h4>VIP Rank</h4>
+          <div class="muted">Extra perks, small cosmetic set</div>
+          <div class="price">$3.99</div>
+          <a href="#" class="buy">Buy Now</a>
+        </div>
+
+        <div class="item">
+          <h4>Pro Rank</h4>
+          <div class="muted">Bigger kit + name color</div>
+          <div class="price">$9.99</div>
+          <a href="#" class="buy">Buy Now</a>
+        </div>
+
+        <div class="item">
+          <h4>Custom Pet</h4>
+          <div class="muted">Cute follower cosmetic</div>
+          <div class="price">$2.49</div>
+          <a href="#" class="buy">Buy Now</a>
+        </div>
+
+        <div class="item">
+          <h4>Monthly Bundle</h4>
+          <div class="muted">Special cosmetics + crate keys</div>
+          <div class="price">$14.99</div>
+          <a href="#" class="buy">Buy Now</a>
+        </div>
+      </div>
+
+      <a href="index.html" class="back">← Back to home</a>
+    </main>
+
+    <footer style="margin-top:28px;color:var(--muted)">Moon MC Network All rights reserved © 2025 web Made by Hansaka </footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    // Demo buy buttons - replace hrefs with your Tebex/store links
+    document.querySelectorAll('.buy').forEach(b => b.addEventListener('click', e => { e.preventDefault(); alert('This is a demo buy button. Replace with your store link.'); }));
+  </script>
+</body>
+</html>

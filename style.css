@@ -1,0 +1,90 @@
+.support-container {
+  margin: 60px auto 100px;
+  max-width: 1000px;
+  padding: 0 20px;
+  color: #ffd200;
+  text-align: center;
+  user-select: none;
+}
+
+.support-container h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  text-shadow: 0 0 12px #ffd200;
+}
+
+.support-container p {
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+  text-shadow: 0 0 7px #ffd200;
+}
+
+.support-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+}
+
+.support-card {
+  background: #0f0f0f;
+  border: 2px solid #ffd200;
+  border-radius: 20px;
+  box-shadow: 0 0 18px #ffd200;
+  padding: 30px 25px;
+  width: 280px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.support-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 0 45px #ffd200;
+}
+
+.support-card .icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 0 10px #ffd200);
+}
+
+.support-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.support-card p {
+  font-size: 1.1rem;
+  color: #ffd200cc;
+  margin-bottom: 25px;
+}
+
+.support-btn {
+  padding: 14px 36px;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  border: 2px solid #ffd200;
+  color: #ffd200;
+  text-decoration: none;
+  box-shadow: 0 0 20px #ffd200;
+  transition: background 0.3s, color 0.3s;
+  user-select: none;
+}
+
+.support-btn:hover {
+  background: #ffd200;
+  color: #050405;
+  box-shadow: 0 0 40px #ffd200;
+}
+
+body {
+  background-image: back.png;
+  background-size: cover;         /* Make image cover entire area */
+  background-position: center;    /* Center the image */
+  background-repeat: no-repeat;   /* Don’t repeat the image */
+  background-attachment: fixed;   /* Optional: makes the bg fixed when scrolling */
+}

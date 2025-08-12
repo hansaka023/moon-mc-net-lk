@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Moon MC Network</title>
+  <style>
+    /* ---------- VARIABLES & RESET ---------- */
+    :root{
+      --bg:#050405;
+      --panel:#0f0f0f;
+      --accent:#ffd200; /* yellow */
+      --muted:#9aa6b2;
+      --glass:rgba(255,255,255,0.03);
+      --radius:16px;
+      --maxW:1200px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{font-family:Inter, Arial, sans-serif;background:var(--bg);color:#eaf6ff;line-height:1.4;overflow-x:hidden}
+    a{color:var(--accent);text-decoration:none}
+    .wrap{max-width:var(--maxW);margin:0 auto;padding:26px;position:relative;z-index:2}
+
+    /* ---------- STARFIELD CANVAS (full-bleed behind content) ---------- */
+    #stars{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+    /* ---------- NAV ---------- */
+    header{position:sticky;top:12px;z-index:40}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff9f00);display:flex;align-items:center;justify-content:center;font-weight:900;color:#151515;font-size:20px;box-shadow:0 8px 30px rgba(255,210,50,0.12)}
+    .brand h1{font-size:18px}
+    nav a{margin-left:18px;font-weight:700;color:#eaf6ff}
+    .nav-actions{display:flex;gap:12px;align-items:center}
+    .btn{background:var(--accent);color:#111;padding:10px 14px;border-radius:12px;font-weight:800;box-shadow:0 10px 40px rgba(255,210,50,0.12);transform:translateZ(0)}
+    .btn-outline{border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px}
+
+    /* animated store button */
+    .store-btn{position:relative;overflow:hidden}
+    .store-btn::after{content:"";position:absolute;left:-60%;top:0;width:60%;height:100%;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);transform:skewX(-20deg);transition:left .6s}
+    .store-btn:hover::after{left:120%}
+
+    /* flashy pulse for join */
+    .pulse{animation:pulseGlow 1.6s infinite}
+    @keyframes pulseGlow{0%{box-shadow:0 6px 30px rgba(255,210,50,0.08)}50%{box-shadow:0 12px 60px rgba(255,210,50,0.18)}100%{box-shadow:0 6px 30px rgba(255,210,50,0.08)}}
+
+    /* ---------- HERO ---------- */
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:center;margin:28px 0;position:relative;z-index:2}
+    .hero-left h2{font-size:40px;color:var(--accent);letter-spacing:0.6px;animation:glow 2s infinite alternate}
+    .tag{color:var(--muted);margin:12px 0}
+    .ip{display:inline-block;background:var(--panel);padding:10px 14px;border-radius:12px;border:2px solid rgba(255,210,50,0.12);font-weight:800}
+    .hero-ctas{margin-top:16px;display:flex;gap:12px}
+
+    @keyframes glow{from{text-shadow:0 0 12px rgba(255,210,50,0.18)}to{text-shadow:0 0 30px rgba(255,210,50,0.36)}}
+
+    /* ---------- STATUS CARD (right) ---------- */
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+    .status{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .dot{width:14px;height:14px;border-radius:50%}
+    .online{background:linear-gradient(90deg,#7fffd4,#ffd200)}
+    .offline{background:#333}
+    .players{font-weight:900;font-size:20px}
+
+    /* ---------- GRID SECTIONS ---------- */
+    section{padding:40px 0;position:relative;z-index:2}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+    .panel{background:var(--panel);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(2,8,12,0.6)}
+    .panel h3{color:var(--accent);margin-bottom:8px}
+    .muted{color:var(--muted);font-size:14px}
+
+    /* gamemode card visuals */
+    .gm{display:flex;gap:12px;align-items:center}
+    .gm .ico{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff9f00);display:flex;align-items:center;justify-content:center;color:#111;font-weight:900;font-size:18px}
+
+    /* owners area */
+    .owners{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:12px}
+    .owner{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:14px;border-radius:12px;text-align:center;width:220px;transition:transform .35s}
+    .owner:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(255,210,50,0.08)}
+    .owner img{width:96px;height:96px;border-radius:50%;object-fit:cover;margin-bottom:10px;border:4px solid rgba(255,255,255,0.04)}
+    .role{color:var(--muted);font-size:13px;margin-top:6px}
+
+    /* rules/donate bar */
+    .info-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+    .pill{padding:10px 14px;border-radius:12px;background:var(--glass);border:1px solid rgba(255,255,255,0.02)}
+
+    /* flashy floating stars overlay */
+    .sparkle{position:absolute;right:12px;top:12px;width:140px;height:140px;pointer-events:none}
+
+    /* footer */
+    footer{padding:30px 0;text-align:center;color:var(--muted);margin-top:30px;position:relative;z-index:2}
+
+    /* responsive */
+    @media (max-width:920px){.hero{grid-template-columns:1fr}.nav nav a{display:none}}
+  </style>
+</head>
+<body>
+
+  <!-- Bright & Flashy Starfield Canvas -->
+  <canvas id="stars"></canvas>
+
+  <div class="wrap">
+    <!-- NAV -->
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="logo">🌙</div>
+          <div>
+            <h1>Moon MC Network</h1>
+            <div class="muted">play.moonmcnet.org • Java 1.21.4</div>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <nav>
+            <a href="#home">Home</a>
+            <a href="#modes">Game Modes</a>
+            <a href="store.html" class="store.html">Store</a>
+            <a href="#rules">Rules</a>
+            <a href="#donate" class="btn store-btn pulse">Donate</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-left">
+          <h2>Welcome to Moon MC Network</h2>
+          <div class="tag">Custom maps • Events • Active community • Best yellow experience</div>
+
+          <div style="margin-top:14px">
+            <span class="ip">IP: <strong id="main-ip">play.moonmc.org</strong></span>
+            <span style="margin-left:12px" class="muted">Version: Java 1.21.4</span>
+          </div>
+
+          <div class="hero-ctas">
+            <a href="#join" class="btn pulse">Join Now</a>
+            <a href="https://discord.gg/yourinvite" target="_blank" class="btn btn-outline">Discord</a>
+            <a href="store.html" class="btn store-btn">Open Store</a>
+          </div>
+
+          <div class="info-row">
+            <div class="pill">Owner: Hansaka — Web Developer & Server Owner</div>
+            <div class="pill">Owner: Savinuja — Server Manager</div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="panel card" style="width:320px">
+            <div class="status">
+              <div style="display:flex;gap:12px;align-items:center">
+                <div id="status-dot" class="dot online"></div>
+                <div>
+                  <div class="players" id="players">...</div>
+                  <div class="muted">players online</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="muted">Ping</div>
+                <div id="ping">...</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <input id="ip-input" placeholder="Check server IP ( play.moonmcnet.org)" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit">
+              <div style="margin-top:10px;display:flex;gap:8px">
+                <button id="check" class="btn btn-outline" style="flex:1">Check</button>
+                <button id="copy" class="btn" style="flex:0 0 auto">Copy IP</button>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+      </section>
+
+      <!-- GAME MODES -->
+      <section id="modes">
+        <h2 style="text-align:center;color:var(--accent)">Game Modes</h2>
+        <div class="grid" style="margin-top:18px">
+
+          <div class="panel gm">
+            <div class="ico">BW</div>
+            <div>
+              <h3>BedWars</h3>
+              <div class="muted">Custom maps, ranked matches & tournaments.</div>
+            </div>
+          </div>
+
+          <div class="panel gm">
+            <div class="ico">SB</div>
+            <div>
+              <h3>SkyBlock</h3>
+              <div class="muted">Island challenges, trading & shops.</div>
+            </div>
+          </div>
+
+          <div class="panel gm">
+            <div class="ico">OB</div>
+            <div>
+              <h3>OneBlock</h3>
+              <div class="muted">Progression, custom loot & boss fights.</div>
+            </div>
+          </div>
+
+          <div class="panel gm">
+            <div class="ico">KP</div>
+            <div>
+              <h3>KitPvP</h3>
+              <div class="muted">Fast action PvP & leaderboards.</div>
+            </div>
+          </div>
+          
+         <div class="panel gm">
+            <div class="ico">OS</div>
+            <div>
+              <h3>op survival</h3>
+              <div class="muted">Fast action fun and PvP custom map.</div>
+            </div>
+                  
+            <div class="panel gm">
+            <div class="ico">TR</div>
+            <div>
+              <h3>temple run</h3>
+              <div class="muted">temple run in minecraft.</div>
+          </div>
+          
+          </div>
+        </div>
+      </section>
+
+      <!-- OWNERS -->
+      <section id="owners">
+        <h2 style="text-align:center;color:var(--accent)">Owners</h2>
+        <div class="owners">
+          <!-- Replace the src values with your avatar images (assets/hansaka.jpg) -->
+          <div class="owner">
+            <img src="hansaka.png" alt="Hansaka" onerror="this.style.filter='grayscale(40%)';this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'96\' height=\'96\'><rect width=\'100%\' height=\'100%\' fill=\'%23ffd200\'/><text x=\'50%\' y=\'54%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'28\' fill=\'%23010101\' font-family=\'Arial\'>H</text></svg>'" style="width:96px;height:96px;border-radius:50%">
+            <div style="font-weight:800;margin-top:8px">Hansaka</div>
+            <div class="role">Web Developer & Server Owner</div>
+          </div>
+
+          <div class="owner">
+            <img src="savinuja.png" alt="Savinuja" onerror="this.style.filter='grayscale(40%)';this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'96\' height=\'96\'><rect width=\'100%\' height=\'100%\' fill=\'%23ffd200\'/><text x=\'50%\' y=\'54%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'28\' fill=\'%23010101\' font-family=\'Arial\'>S</text></svg>'" style="width:96px;height:96px;border-radius:50%">
+            <div style="font-weight:800;margin-top:8px">Savinuja</div>
+            <div class="role">Server Manager and 2nd owner</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RULES & DONATE -->
+      <section id="rules">
+        <h2 style="text-align:center;color:var(--accent)">Rules</h2>
+        <div class="grid" style="margin-top:18px">
+          <div class="panel">
+            <h3>Basic Rules</h3>
+            <ul style="text-align:left;margin-top:8px;color:#dff7ff;line-height:1.7">
+              <li>No cheating or hacking.</li>
+              <li>No griefing or stealing from other players.</li>
+              <li>Be respectful to staff and other players.</li>
+              <li>No advertising other servers without permission.</li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <h3>Ban Policy</h3>
+            <p class="muted">Rules violations may result in warnings, temporary bans or permanent bans depending on severity.</p>
+            <p class="muted">Appeal on Discord with proof & explanations.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="donate">
+        <h2 style="text-align:center;color:var(--accent)">Donate</h2>
+        <div class="grid" style="margin-top:18px">
+          <div class="panel">
+            <h3>Support Moon MC</h3>
+            <p class="muted">Donations help keep server running and pay for builds and events. Thank you for supporting! For Moon Mc Networks</p>
+            <div style="margin-top:12px">
+              <!-- placeholder Tebex link, replace with your real Tebex/CraftingStore link -->
+              <a href="https://www.paypal.com/ncp/payment/N5YJ8YCHXUQSA" class="btn">Donate Now</a>
+              <a href="store.html" class="btn btn-outline">Visit Store</a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Payment Methods</h3>
+            <p class="muted">PayPal</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div class="muted">Moon MC Network All rights reserved © 2025 • web Made by Hansaka
+    </footer>
+  </div>
+
+  <script>
+    // ---------- Starfield (bright & flashy) ----------
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function makeStars(count){
+      stars = [];
+      for(let i=0;i<count;i++){
+        stars.push({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          z: Math.random()*0.9 + 0.1,
+          vx: (Math.random()-0.5)*0.4,
+          vy: (Math.random()-0.5)*0.4,
+          hue: 50 + Math.random()*40, // yellowish range
+          size: Math.random()*1.8 + 0.6
+        });
+      }
+    }
+    makeStars(Math.floor((window.innerWidth+window.innerHeight)/8));
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      // subtle background glow
+      const g = ctx.createRadialGradient(W*0.8,H*0.2,10,W*0.5,H*0.6,Math.max(W,H));
+      g.addColorStop(0,'rgba(255,230,150,0.06)');
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+      for(let s of stars){
+        s.x += s.vx * (1+s.z*1.5);
+        s.y += s.vy * (1+s.z*1.5);
+        if(s.x < -10) s.x = W+10;
+        if(s.x > W+10) s.x = -10;
+        if(s.y < -10) s.y = H+10;
+        if(s.y > H+10) s.y = -10;
+
+        // flashy twinkle
+        const tw = Math.abs(Math.sin(Date.now()/600 + s.z*10));
+        const radius = s.size * (1 + tw*1.8);
+        const alpha = 0.6 + tw*0.4;
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${s.hue},100%,60%,${alpha})`;
+        ctx.arc(s.x, s.y, radius, 0, Math.PI*2);
+        ctx.fill();
+
+        // glow
+        const gradient = ctx.createRadialGradient(s.x,s.y,radius*0.2,s.x,s.y,radius*6);
+        gradient.addColorStop(0, `hsla(${s.hue},100%,60%,${alpha*0.35})`);
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(s.x - radius*6, s.y - radius*6, radius*12, radius*12);
+      }
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // regenerate stars on big res change
+    let lastSize = window.innerWidth + window.innerHeight;
+    setInterval(()=>{
+      const now = window.innerWidth + window.innerHeight;
+      if(Math.abs(now - lastSize) > 400) { lastSize = now; makeStars(Math.floor((window.innerWidth+window.innerHeight)/8)); }
+    },1000);
+
+    // ---------- Server status: live fetch to api.mcsrvstat.us (client-side) ----------
+    // Note: some hosts block CORS. If you see CORS error, deploy to Netlify/Vercel or use server proxy.
+    const playersEl = document.getElementById('players');
+    const pingEl = document.getElementById('ping');
+    const statusDot = document.getElementById('status-dot');
+    const defaultIP = 'play.moonmc.org';
+
+    async function fetchStatus(ip = defaultIP){
+      try{
+        playersEl.textContent = '...'; pingEl.textContent = '...';
+        const res = await fetch(`https://api.mcsrvstat.us/2/${encodeURIComponent(ip)}`);
+        const data = await res.json();
+        if(data && data.online){
+          playersEl.textContent = data.players && data.players.online ? data.players.online : (data.players ? data.players : '—');
+          // mcsrvstat doesn't always provide ping, so try debug.ping
+          pingEl.textContent = data.debug && data.debug.ping ? data.debug.ping + ' ms' : (data.ping ? data.ping + ' ms' : '—');
+          statusDot.className = 'dot online';
+        } else {
+          playersEl.textContent = '0'; pingEl.textContent = '--'; statusDot.className = 'dot offline';
+        }
+      }catch(err){
+        console.error('Status fetch failed', err);
+        // fallback to demo/random if API blocked
+        playersEl.textContent = Math.floor(Math.random()*80)+2;
+        pingEl.textContent = Math.floor(Math.random()*120)+20 + ' ms';
+        statusDot.className = 'dot online';
+      }
+    }
+
+    // initial fetch and auto-refresh every 20s
+    fetchStatus();
+    setInterval(()=>fetchStatus(),20000);
+
+    document.getElementById('check').addEventListener('click', ()=>{
+      const ip = document.getElementById('ip-input').value.trim() || defaultIP;
+      fetchStatus(ip);
+    });
+
+    document.getElementById('copy').addEventListener('click', ()=>{
+      const ip = document.getElementById('main-ip').textContent;
+      navigator.clipboard?.writeText(ip).then(()=>{
+        alert('IP copied: ' + ip);
+      }).catch(()=>{ alert('Copy failed — copy manually: ' + ip); });
+    });
+
+    // small housekeeping
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

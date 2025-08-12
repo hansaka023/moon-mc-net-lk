@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Moon MC Network — Donate</title>
+  <style>
+    :root{
+      --bg:#050405;
+      --panel:#0f0f0f;
+      --accent:#ffd200;
+      --muted:#bfbfbf;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:var(--bg);
+      color:#fff;
+      overflow-x:hidden;
+      min-height:100vh;
+    }
+    #particles{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+    }
+    .wrap{
+      position:relative;
+      z-index:5;
+      min-height:150vh;  /* allow scrolling */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:48px 20px;
+    }
+    .logo-wrap{
+      position:relative;
+      width:200px;
+      height:200px;
+      margin-top:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .logo{
+      width:140px;
+      height:140px;
+      object-fit:contain;
+      border-radius:50%;
+      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-14px)}
+      100%{transform:translateY(0)}
+    }
+    h1{
+      font-size:28px;
+      margin:18px 0 6px;
+      text-align:center;
+      letter-spacing:1px;
+    }
+    p.lead{
+      color:var(--muted);
+      max-width:720px;
+      text-align:center;
+      margin:0 0 24px;
+    }
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(6px);
+      padding:26px;
+      border-radius:18px;
+      max-width:900px;
+      width:100%;
+      box-shadow:0 12px 40px rgba(0,0,0,0.6);
+      display:grid;
+      grid-template-columns:1fr 340px;
+      gap:20px;
+    }
+    .left{
+      padding:6px;
+    }
+    .tiers{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .tier{
+      background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.007));
+      border-radius:12px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tier .info{
+      display:flex;
+      flex-direction:column;
+    }
+    .tier h3{
+      margin:0;
+      font-size:16px;
+    }
+    .tier span{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .right{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:center;
+      padding:6px;
+    }
+    .big-btn{
+      width:100%;
+      padding:14px 18px;
+      border-radius:14px;
+      border:0;
+      font-weight:700;
+      font-size:16px;
+      background:linear-gradient(90deg,var(--accent), #ffb94d);
+      color:#111;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(255,210,70,0.12);
+      transform:translateY(0);
+      transition:transform .15s ease,box-shadow .15s ease;
+    }
+    .big-btn:hover{
+      transform:translateY(-4px);
+      box-shadow:0 18px 40px rgba(255,210,70,0.18);
+    }
+    .btn-animated{
+      position:relative;
+      overflow:hidden;
+    }
+    .btn-animated::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(45deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      mix-blend-mode:overlay;
+      pointer-events:none;
+    }
+    .quick{
+      display:flex;
+      gap:12px;
+      width:100%;
+    }
+    .quick .q{
+      flex:1;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:transparent;
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .price{
+      font-weight:800;
+    }
+    footer{
+      margin-top:20px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    @media (max-width:880px){
+      .panel{
+        grid-template-columns:1fr;
+      }
+      .logo-wrap{
+        width:150px;
+        height:150px;
+      }
+      .logo{
+        width:110px;
+        height:110px;
+      }
+    }
+    .glow{
+      position:relative;
+      border-radius:12px;
+    }
+    .glow::before{
+      content:"";
+      position:absolute;
+      inset:-6px;
+      background:linear-gradient(90deg, rgba(255,210,70,0.12), rgba(255,210,70,0.02));
+      filter:blur(18px);
+      z-index:-1;
+      opacity:0.85;
+      transition:opacity .2s;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <div class="wrap">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Moon MC Network Logo" class="logo" />
+    </div>
+
+    <h1>Moon MC Network — Support the Server</h1>
+    <p class="lead">Help keep Moon MC running, fund new maps, tips, and events. Pick a tier below or make a custom donation — every contribution helps keep the server alive and growing.</p>
+
+    <div class="panel">
+      <div class="left">
+        <div class="tiers">
+          <div class="tier"><div class="info"><h3>Bronze Supporter</h3><span>In-game tag + 1 small crate key</span></div><div class="price">$2</div></div>
+          <div class="tier"><div class="info"><h3>Silver Supporter</h3><span>Tag + 3 crate keys + small cosmetic</span></div><div class="price">$6</div></div>
+          <div class="tier"><div class="info"><h3>Gold Supporter</h3><span>Tag + 10 keys + exclusive kit</span></div><div class="price">$15</div></div>
+          <div class="tier"><div class="info"><h3>Custom Amount</h3><span>Enter any amount you want</span></div><div class="price">—</div></div>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+          <input id="customAmt" type="number" placeholder="Custom $" style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;width:140px" />
+          <button class="q" onclick="applyCustom()">Set amount</button>
+        </div>
+      </div>
+
+      <div class="right">
+        <div style="width:100%">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="color:var(--muted);font-size:13px">Selected</div>
+            <div id="selectedPrice" style="font-weight:800">$6</div>
+          </div>
+
+          <button id="donateBtn" class="big-btn btn-animated glow" onclick="window.location.href='https://www.paypal.com/ncp/payment/N5YJ8YCHXUQSA'">Donate with Card</button>
+
+
+          <div style="height:8px"></div>
+
+          <div class="quick">
+            <button class="q" onclick="quick(2)">$2</button>
+            <button class="q" onclick="quick(6)">$6</button>
+            <button class="q" onclick="quick(15)">$15</button>
+          </div>
+        </div>
+
+        <div style="width:100%;text-align:center;color:var(--muted);font-size:13px">
+          Or donate via QR:
+          <div id="QR.png" style="margin-top:10px;border-radius:10px;padding:10px;border:1px dashed rgba(255,255,255,0.04);min-height:110px;display:flex;align-items:center;justify-content:center">
+            <img id="qr" src="QR.png" alt="QR.png" style="max-width:100%;max-height:90px;border-radius:10px" />
+            <div id="qr" style="color:var(--muted);font-size:13px"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer>Moon MC Network All rights reserved © 2025• Made by Hansaka.</footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = innerWidth;
+    let h = canvas.height = innerHeight;
+
+    const particles = [];
+    const COUNT = Math.floor((w*h)/32000);
+
+    function rand(min,max){return Math.random()*(max-min)+min}
+
+    class P{
+      constructor(){this.reset();}
+      reset(){this.x = rand(0,w);this.y = rand(0,h);this.vx = rand(-0.2,0.6);this.vy = rand(-0.25,0.25);this.r = rand(0.6,2.6);this.alpha = rand(0.06,0.26);}
+      step(){this.x += this.vx;this.y += this.vy;if(this.x<-50||this.x>w+50||this.y<-50||this.y>h+50) this.reset();}
+      draw(){ctx.beginPath();ctx.fillStyle = 'rgba(255,220,90,'+this.alpha+')';ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();}
+    }
+
+    function init(){particles.length=0;for(let i=0;i<COUNT;i++)particles.push(new P());}
+
+    function loop(){ctx.clearRect(0,0,w,h);for(let p of particles){p.step();p.draw()}requestAnimationFrame(loop);}
+
+    addEventListener('resize',()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight;init()});
+    init();loop();
+
+    let selected = 6;
+    const selPrice = document.getElementById('selectedPrice');
+    function quick(v){selected=v;selPrice.textContent='$'+v}
+    function applyCustom(){const v = Number(document.getElementById('customAmt').value);if(v>0){selected=v;selPrice.textContent='$'+v}else{alert('Enter a valid amount')}}
+    function donate(){alert('Proceed to donate $' + selected + 'https://www.paypal.com/ncp/payment/N5YJ8YCHXUQSA');}
+
+    const qrImg = document.getElementById('qrImg');
+    const qrPlaceholder = document.getElementById('qrPlaceholder');
+    function tryLoadQR(){fetch('qr.png').then(r=>{if(r.ok){qrImg.style.display='block';qrPlaceholder.style.display='none'}}).catch(()=>{});}
+    tryLoadQR();
+  </script>
+</body>
+</html>
